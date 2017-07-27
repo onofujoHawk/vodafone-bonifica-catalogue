@@ -231,8 +231,8 @@ public class CatalogueService implements CatalogueDao {
     public List findProductsByCode(long c) {
         openSession();
         Criteria criteria = session.createCriteria(Product.class);
-        criteria.add(Restrictions.eq("code", c));
-        criteria.add(Restrictions.eq("state", ComponentState.Active));
+        Criterion criterion = Restrictions.and(Restrictions.eq("code", c), Restrictions.eq("state", ComponentState.Active));
+        criteria.add(criterion);
         List<Product> res = criteria.list();
         closeSession();
         return res;
@@ -245,8 +245,8 @@ public class CatalogueService implements CatalogueDao {
     public List findPlanByMarketAndType() {
         openSession();
         Criteria criteria = session.createCriteria(Plan.class);
-        criteria.add(Restrictions.eq("market", MarketType.SinglePlay));
-        criteria.add(Restrictions.eq("type", PlanType.SIM));
+        Criterion criterion = Restrictions.and(Restrictions.eq("market", MarketType.SinglePlay), Restrictions.eq("type", PlanType.SIM));
+        criteria.add(criterion);
         List<Plan> res = criteria.list();
         closeSession();
         return res;
@@ -277,12 +277,13 @@ public class CatalogueService implements CatalogueDao {
     public List findPlanProductRelationsByPlans(List plans) {
         openSession();
         Criteria criteria = session.createCriteria(PlanProductRelation.class);
-        criteria.add(Restrictions.in("plan", plans));
 
         //And product IS NULL or <> Diritto di ripensamento
         Criterion notEqual = Restrictions.ne("product", dirRip);
         Criterion isNull = Restrictions.isNull("product");
-        criteria.add(Restrictions.or(notEqual, isNull));
+        Criterion criterion = Restrictions.and(Restrictions.in("plan", plans), Restrictions.or(notEqual, isNull));
+
+        criteria.add(criterion);
 
         //Group by
         criteria.setProjection(Projections
@@ -323,9 +324,8 @@ public class CatalogueService implements CatalogueDao {
     public List findActiveOffersByMarket() {
         openSession();
         Criteria criteria = session.createCriteria(Offer.class);
-
-        criteria.add(Restrictions.eq("market", MarketType.SinglePlay));
-        criteria.add(Restrictions.eq("state", ComponentState.Active));
+        Criterion criterion = Restrictions.and(Restrictions.eq("market", MarketType.SinglePlay), Restrictions.eq("state", ComponentState.Active));
+        criteria.add(criterion);
         List res = criteria.list();
         closeSession();
         return res;
@@ -340,13 +340,14 @@ public class CatalogueService implements CatalogueDao {
     public List findProductsInOfferByPlansAndOffers(List plans, List offers) {
         openSession();
         Criteria criteria = session.createCriteria(ProductInOffer.class);
-        criteria.add(Restrictions.in("plan", plans));
-        criteria.add(Restrictions.in("offer", offers));
 
         //And product IS NULL or <> Diritto di ripensamento
         Criterion notEqual = Restrictions.ne("product", dirRip);
         Criterion isNull = Restrictions.isNull("product");
-        criteria.add(Restrictions.or(notEqual, isNull));
+        Criterion criterion = Restrictions.and(Restrictions.in("plan", plans), Restrictions.in("offer", offers),
+                Restrictions.or(notEqual, isNull));
+
+        criteria.add(criterion);
 
         //Group by
         criteria.setProjection(Projections
@@ -379,20 +380,19 @@ public class CatalogueService implements CatalogueDao {
         openSession();
         Criteria criteria = session.createCriteria(OfferInCampaign.class);
 
-        criteria.add(Restrictions.in("plan", plans));
-        criteria.add(Restrictions.in("offer", offers));
-        criteria.add(Restrictions.in("campaign", cmpgns));
-
         //And product IS NULL or <> AGCOM/Diritto di ripensamento
         Criterion notEqual = Restrictions.ne("product", dirRip);
         Criterion isNull = Restrictions.isNull("product");
-        criteria.add(Restrictions.or(notEqual, isNull));
+        Criterion criterion = Restrictions.and(Restrictions.in("plan", plans), Restrictions.in("offer", offers),
+                Restrictions.in("campaign", cmpgns), Restrictions.or(notEqual, isNull));
 
-        //Group by
+        criteria.add(criterion);
+
+        //Group by offers and campaigns
         criteria.setProjection(Projections
                 .projectionList()
                 .add(Projections.groupProperty("offer").as("offer"))
-                .add(Projections.property("campaign").as("campaign"))
+                .add(Projections.groupProperty("campaign").as("campaign"))
                 .add(Projections.property("plan").as("plan"))
                 .add(Projections.property("product").as("product"))
                 .add(Projections.property("offer").as("offer"))
@@ -483,7 +483,7 @@ public class CatalogueService implements CatalogueDao {
                 .setProjection(Projections
                         .projectionList()
                         .add(Projections.groupProperty("offer").as("offer"))
-                        .add(Projections.property("campaign").as("campaign"))
+                        .add(Projections.groupProperty("campaign").as("campaign"))
                         .add(Projections.property("plan").as("plan"))
                         .add(Projections.property("product").as("product"))
                         .add(Projections.property("offer").as("offer"))

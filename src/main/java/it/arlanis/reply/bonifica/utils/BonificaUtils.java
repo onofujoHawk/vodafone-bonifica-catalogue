@@ -20,7 +20,7 @@ import java.util.List;
 public class BonificaUtils {
 
     public static final String OPTIONAL_SERVICE_NAME = "Diritto di Ripensamento";
-    public static final int OPTIONAL_SERVICE_CODE = 6979;
+    public static final int OPTIONAL_SERVICE_CODE = 9679;
     public static final Date CURRENT_DATE = new Date();
     public static final String SERVICE_OWNER = "administrator";
     public static final int SERVICE_VERSION = 1;

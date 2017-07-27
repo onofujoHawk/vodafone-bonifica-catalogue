@@ -120,8 +120,8 @@ public class BonificaCatalogue {
                             if (rel.getProduct() == null || rel.getProduct().getCode().intValue() != BonificaUtils.OPTIONAL_SERVICE_CODE) {
 
                                 PlanProductRelation ppr = new PlanProductRelation();
-                                ppr.setIncluded(rel.getIncluded());
-                                ppr.setNewValue(rel.getNewValue());
+                                ppr.setIncluded(rel.getIncluded() != null ? rel.getIncluded() : false);
+                                ppr.setNewValue(rel.getNewValue() != null ? rel.getNewValue() : false);
                                 ppr.setParameter(rel.getParameter());
                                 ppr.setPlan(rel.getPlan()); //FK
 
@@ -177,8 +177,8 @@ public class BonificaCatalogue {
 
                             if (p.getProduct() == null || p.getProduct().getCode().intValue() != BonificaUtils.OPTIONAL_SERVICE_CODE) {
                                 ProductInOffer prInOf = new ProductInOffer();
-                                prInOf.setIncluded(p.getIncluded());
-                                prInOf.setIsNewValue(p.getIsNewValue());
+                                prInOf.setIncluded(p.getIncluded() != null ? p.getIncluded() : false);
+                                prInOf.setIsNewValue(p.getIsNewValue() != null ? p.getIsNewValue() : false);
                                 prInOf.setMaterials(p.getMaterials());
                                 prInOf.setOffer(p.getOffer());//FK
 
@@ -237,9 +237,9 @@ public class BonificaCatalogue {
                             if(cmp.getProduct() == null || cmp.getProduct().getCode() != BonificaUtils.OPTIONAL_SERVICE_CODE) {
                                 OfferInCampaign offInCmpgn = new OfferInCampaign();
                                 offInCmpgn.setCampaign(cmp.getCampaign()); //FK
-                                offInCmpgn.setIncluded(cmp.getIncluded());
+                                offInCmpgn.setIncluded(cmp.getIncluded() != null ? cmp.getIncluded() : false);
+                                offInCmpgn.setNewValue(cmp.getNewValue() != null ? cmp.getNewValue() : false);
                                 offInCmpgn.setMaterial(cmp.getMaterial());
-                                offInCmpgn.setNewValue(cmp.getNewValue());
                                 offInCmpgn.setOffer(cmp.getOffer()); //FK
                                 offInCmpgn.setParameter(cmp.getParameter());
                                 offInCmpgn.setPayment(cmp.getPayment());
